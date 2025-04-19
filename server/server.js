@@ -5,19 +5,11 @@ const cors = require('cors');
 const pool = require('./src/config/db');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.url} from origin: ${req.headers.origin}`);
-    next();
-  });
 
 console.log('Backend: Applying CORS middleware...');
-app.use(cors({
-    origin: '*', // Explicitly allow all origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+app.use(cors());
 console.log('Backend: CORS middleware applied.');
 
 

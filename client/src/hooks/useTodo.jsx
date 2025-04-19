@@ -7,62 +7,54 @@ function useTodo() {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ error, setError ] = useState(null);
 
-    // const fetchTodos = async () => {
-    //     try{
-
-    //         setIsLoading(true);
-            
-    //         const response = await fetch('http://localhost:5000/api/till/' ,{
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type':'application/json'
-    //             }
-    //         });
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json().catch(()=>({}));
-    //             throw new Error(`HTTP error! status: ${response.status},message: ${errorData.error || 'Unknown error'}`);
-    //         }
-
-    //         const data = await response.json();
-    //         setTodos(data);
-    //         setError(null);
-
-    //     } catch (err) {
-    //         console.error("Failed to fetch todos", err);
-    //         setError("Failed to load todos.");
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }
-
-
+    const API_BASE_URL = '/api/till';
     
-    useEffect(() => {
-        const getData = async () => {
-            try{
-                const res = await axios.get('http://localhost:5000/api/till')
-                console.log(res);
-                
-            } catch (err) {
-                console.log(err);
-            }
+    const fetcTodos = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await axios.get(API_BASE_URL);
+            console.log("Fetched todos:", response.data);
+            setTodos(response.data);
+
+        } catch (error) {
+            console.error("Failed to fetch todos:", err);
+            setError(`Failed to fetch todos: ${err.message}`);
+        } finally {
+            setIsLoading(false);
         }
-        getData();
+    }
+
+    useEffect(() => {
+        fetcTodos();
     }, [])
 
-    const addTodo = (task) => {
-        setTodos([... todos, 
-            {id: Date.now(), 
-             task: task, 
-             completed: false}]);
+    const addTodo = async (task) => {
+        if (!task.trim()) return;
+
+        try {
+            const response = await axios.post(API_BASE_URL, {task: task});
+
+            const newTodo = response.data;
+
+            setTodos([...todos, newTodo]);
+            setError(null);
+            console.log("Added task:", newTodo );
+        } catch (err) {
+            console.err("Failed to add todo:",err);
+            setError(`Failed to add todo: ${err.message}`)
+        }
     }
+
 
     const removeTodo = (id) => {
         const newTodos = todos.filter(todo => todo.id !== id);
         setTodos(newTodos);
         
     }
+
+    
 
     const toggleTodo = (id) => {
         const newTodos = todos.map(todo => 
