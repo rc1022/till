@@ -47,20 +47,42 @@ function useTodo() {
         }
     }
 
+    const removeTodo = async (id) => {
 
-    const removeTodo = (id) => {
-        const newTodos = todos.filter(todo => todo.id !== id);
-        setTodos(newTodos);
-        
+        try {
+            const response = await axios.delete(`${API_BASE_URL}/${id}`);
+
+            setTodos(todos.filter(todo => todo.id !== id));
+            setError(null);
+
+        } catch (error) {
+            console.error(`Failed to remove todo ${id}:`, err);
+            setError(`Failed to remove todo: ${err.message}`);
+        }
     }
 
-    
 
-    const toggleTodo = (id) => {
-        const newTodos = todos.map(todo => 
-            todo.id === id ? {...todo, completed: !todo.completed} : todo
-            )
-        setTodos(newTodos);
+    const toggleTodo = async (id) => {
+
+        const todo = todos.find(todo=> todo.id === id);
+        const currentStatus = todo.completed;
+
+        try {
+            const response = await axios.put(`${API_BASE_URL}/${id}`, {
+                completed: !currentStatus
+            });
+            const updatedTodo = response.data;
+            setTodos(todos.map(todo =>
+                todo.id === updatedTodo.id ? updatedTodo : todo 
+           ));
+            setError(null);
+
+            console.log(`Toggled todo with ID: ${id}`, updatedTodo);
+        } catch (error) {
+            console.error(`Failed to toggle todo ${id}:`, err);
+            setError(`Failed to toggle todo: ${err.message}`);
+
+        }
 
     }
 

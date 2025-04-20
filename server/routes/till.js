@@ -6,5 +6,8 @@ router.get('/', tillController.getAllTodos);
 
 router.post('/', tillController.createTodo);
 
+router.delete('/:id',tillController.removeTodo);
+
+router.put('/:id',tillController.updateTodo);
 
 module.exports = router;
