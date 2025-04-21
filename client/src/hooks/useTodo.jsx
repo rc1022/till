@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios';
 
 function useTodo() {
@@ -62,7 +62,7 @@ function useTodo() {
     }
 
 
-    const toggleTodo = async (id) => {
+    const updateTodo = async (id) => {
 
         const todo = todos.find(todo=> todo.id === id);
         const currentStatus = todo.completed;
@@ -86,7 +86,12 @@ function useTodo() {
 
     }
 
-  return {todos, addTodo, removeTodo, toggleTodo, isLoading, error}
+    const editTodo = async (id) => {
+
+    }
+
+
+  return {todos, addTodo, removeTodo, updateTodo, editTodo, isLoading, error}
 }
 
 export default useTodo

@@ -3,12 +3,12 @@ import InputBar from "./components/InputBar"
 import List from "./components/List"
 import Title from "./components/Title"
 import useTodo from "./hooks/useTodo";
-import NoTask from "./components/NoTask";
+import NoTaskDisplay from "./components/NoTaskDisplay";
 
 
 function App() {
 
-  const { todos, addTodo, removeTodo, toggleTodo } = useTodo();
+  const { todos, addTodo, removeTodo, updateTodo } = useTodo();
 
   const [ task, setTask ] = useState("");
 
@@ -29,8 +29,8 @@ function App() {
           {
             incompletedTasks.length > 0 ?
           <List 
-            todos={incompletedTasks} handleRemoveTodo={removeTodo} handleToggleTodo={toggleTodo}/> :
-          <NoTask />
+            todos={incompletedTasks} handleRemoveTodo={removeTodo} handleUpdateTodo={updateTodo}/> :
+          <NoTaskDisplay />
           }
         </div>
 
@@ -39,8 +39,8 @@ function App() {
         {
           completedTasks.length > 0 ?
         <List 
-          todos={completedTasks} handleRemoveTodo={removeTodo} handleToggleTodo={toggleTodo}/> :
-        <NoTask />
+          todos={completedTasks} handleRemoveTodo={removeTodo} handleUpdateTodo={updateTodo}/> :
+        <NoTaskDisplay />
         }
         </div>
       </div>

@@ -1,8 +1,10 @@
 import React from 'react'
 
-function Task() {
+function Task({ task }) {
   return (
-    <div>Task</div>
+    <div className='h-15 w-50 text-center flex justify-center items-center'>
+        <p> {task} </p>
+    </div>
   )
 }
 
