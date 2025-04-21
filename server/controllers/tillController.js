@@ -1,8 +1,6 @@
 const pool = require('../src/config/db');
 
 exports.getAllTodos = async ( req, res ) => {
-    console.log('[Backend] GET /api/till route handler reached');
-
     try {
         const [rows] = await pool.query(
             'SELECT * FROM todos ORDER BY created_at DESC'
@@ -15,6 +13,21 @@ exports.getAllTodos = async ( req, res ) => {
         res.status(500).json({message: 'Error fetching till_db', err: err.message});
     }
 };
+
+exports.getTodo = async ( req, res ) => {
+    const { id } = req.params;
+
+    try {
+    const [ row ] = await pool.query(
+        'SELECT * FROM todos WHERE id =?', [id]
+    )
+
+    res.json(row);
+    } catch (err) {
+        console.error(`Error fetching todo id${id}`, err);
+        res.status(500).json({message: `Error fetching todo id${id}`, err: err.message});
+    }
+}
 
 exports.createTodo = async ( req, res ) => {
 
@@ -68,14 +81,36 @@ exports.removeTodo = async ( req, res ) => {
 
 exports.updateTodo = async ( req, res) => {
     const { id } = req.params;
-    const { completed } = req.body;
+    const updatedFields = req.body;
+
+    if (Object.keys(updatedFields).length === 0) {
+        return res.status(400).json({ message: 'Request body cannot be empty. Provide fields to update (e.g., task or is_completed).' });
+    }
+
+    const queryParts = [];
+    const queryValues = [];
+
+    for (const field in updatedFields) {
+        if (['task','completed'].includes(field)) {
+            queryParts.push(`${field} = ?`);
+            queryValues.push(updatedFields[field]);
+        } else {
+            console.warn(`Ignoring unknown field in update request body: ${field}`);
+        }
+    }
+
+    if (queryParts.length === 0) {
+        return res.status(400).json({ message: 'No valid fields provided for update (e.g., task, is_completed).' });
+    }
+
+    const sql = `UPDATE todos 
+                SET ${queryParts.join(', ')} 
+                WHERE id = ?`
+    queryValues.push(id)
 
     try {
         
-        const [ result ] = await pool.query(
-            'UPDATE todos SET completed = ? WHERE id = ?',
-            [completed, id]
-        )
+        const [ result ] = await pool.query(sql, queryValues)
 
         if (result.affectedRows ===0) {
             return res.status(404).json({message: `Task with id:${id} not found.`})
