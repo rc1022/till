@@ -86,8 +86,25 @@ function useTodo() {
 
     }
 
-    const editTodo = async (id) => {
+    const editTodo = async (id, editedTask) => {
 
+        try {
+            const response = await axios.put(`${API_BASE_URL}/${id}`,{
+                task: editedTask
+            })
+
+            const updatedTodo = response.data;
+
+            setTodos(todos.map(todo => 
+                todo.id === updatedTodo.id ? updatedTodo : todo
+            ))
+
+            console.log(`Toggled todo with ID: ${id}`, updatedTodo);
+
+        } catch (error) {
+            console.error(`Failed to toggle todo ${id}:`, err);
+            setError(`Failed to toggle todo: ${err.message}`);
+        }
     }
 
 

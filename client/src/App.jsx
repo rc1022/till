@@ -4,17 +4,32 @@ import List from "./components/List"
 import Title from "./components/Title"
 import useTodo from "./hooks/useTodo";
 import NoTaskDisplay from "./components/NoTaskDisplay";
+import EditModal from "./components/EditModal";
 
 
 function App() {
 
-  const { todos, addTodo, removeTodo, updateTodo } = useTodo();
+  const { todos, addTodo, removeTodo, updateTodo, editTodo } = useTodo();
 
   const [ task, setTask ] = useState("");
+
+  const [ isEditing, setIsEditing ] = useState(false);
+  
+  const [ editingTodo, setEditingTodo ] = useState({});
 
   const incompletedTasks = todos.filter(todo => !todo.completed);
   const completedTasks = todos.filter(todo => todo.completed);
 
+
+  const handleEditing = ( todo ) => {
+     if (todo) {
+      setEditingTodo(todo);
+      setIsEditing(!isEditing);
+     } else {
+      setIsEditing(false);
+      setEditingTodo(null);
+     }
+  }
 
   return (
     <div className='flex flex-col justify-center items-center bg-retro-bg w-screen h-screen '>
@@ -29,7 +44,11 @@ function App() {
           {
             incompletedTasks.length > 0 ?
           <List 
-            todos={incompletedTasks} handleRemoveTodo={removeTodo} handleUpdateTodo={updateTodo}/> :
+            todos={incompletedTasks} 
+            handleRemoveTodo={removeTodo} 
+            handleUpdateTodo={updateTodo}
+            handleEditing={handleEditing}  
+            /> :
           <NoTaskDisplay />
           }
         </div>
@@ -39,11 +58,22 @@ function App() {
         {
           completedTasks.length > 0 ?
         <List 
-          todos={completedTasks} handleRemoveTodo={removeTodo} handleUpdateTodo={updateTodo}/> :
+          todos={completedTasks} 
+          handleRemoveTodo={removeTodo} 
+          handleUpdateTodo={updateTodo}
+          handleEditing={handleEditing} 
+          /> :
         <NoTaskDisplay />
         }
         </div>
       </div>
+
+      {isEditing && 
+      <EditModal 
+        handleEditing={handleEditing}
+        handleEditTodo={editTodo}
+        editingTodo={editingTodo}
+        />}
     
     </div>
      

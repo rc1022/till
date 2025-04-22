@@ -1,10 +1,10 @@
 import React from 'react'
 
-function EditButton() {
+function EditButton({ handleEditing, todo }) {
   return (
     <button 
         className='h-15 w-20 rounded-2xl p-3 m-1 bg-retro-red flex justify-center items-center cursor-pointer hover:scale-110 ease-in-out duration-500'
-        onClick={()=>handleRemoveTodo(id)}
+        onClick={()=>handleEditing(todo)}
     > 
         <span className='text-sm'> edit </span>
     </button>

@@ -4,7 +4,7 @@ import UpdateButton from './UpdateButton'
 import Task from './Task'
 import EditButton from './EditButton'
 
-function List( { todos, handleRemoveTodo, handleUpdateTodo } ) {
+function List( { todos, handleRemoveTodo, handleUpdateTodo, handleEditing, handleEditTodo } ) {
 
   return (
     <div className='flex flex-col'>
@@ -14,12 +14,18 @@ function List( { todos, handleRemoveTodo, handleUpdateTodo } ) {
                  className='hover:scale-110 ease-in-out duration-500 flex flex-row items-center p-3 m-2 font-pixel10 text-2xl rounded-2xl bg-retro-brown text-retro-bg' >
                 <Task task={todo.task} />
                 
-                <EditButton />
+                <EditButton 
+                    handleEditing={handleEditing} 
+                    todo={todo}/>
                 
-                <UpdateButton id={todo.id} isCompleted={todo.completed} handleUpdateTodo={handleUpdateTodo} />
+                <UpdateButton id={todo.id} 
+                    isCompleted={todo.completed} 
+                    handleUpdateTodo={handleUpdateTodo} />
                 
 
-                <RemoveButton handleRemoveTodo={handleRemoveTodo} id={todo.id} />
+                <RemoveButton 
+                    handleRemoveTodo={handleRemoveTodo} 
+                    id={todo.id} />
             </div>
         ))
         }
